@@ -1,0 +1,18 @@
+// Desktop View
+.bep-hide__desktop {
+	opacity: 0.3;
+}
+
+// Tablet View
+@media all and (max-width: 1024px) and (min-width: 768px) {
+	.bep-hide__tablet {
+		opacity: 0.3;
+	}
+}
+
+// Mobile View
+@media all and (max-width: 767px) {
+	.bep-hide__mobile {
+		opacity: 0.3;
+	}
+}

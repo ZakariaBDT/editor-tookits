@@ -1,0 +1,17 @@
+.bep-hide__desktop {
+	display: none;
+}
+
+/*  Tablet View */
+@media all and (max-width: 1024px) and (min-width: 768px) {
+	.bep-hide__tablet {
+		display: none;
+	}
+}
+
+/* Mobile View */
+@media all and (max-width: 767px) {
+	.bep-hide__mobile {
+		display: none;
+	}
+}
