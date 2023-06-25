@@ -188,7 +188,7 @@ const bepAddVisibilityClass = createHigherOrderComponent(BlockListBlock => {
     }));
   };
 }, 'bepAddVisibilityClass');
-addFilter('editor.BlockListBlock', 'bep/device-class', bepAddVisibilityClass);
+addFilter('editor.BlockListBlock', 'bep/device-class', bepAddVisibilityClass, 20);
 
 /***/ }),
 
@@ -232,6 +232,9 @@ const {
   RangeControl
 } = wp.components;
 const {
+  Fragment
+} = wp.element;
+const {
   __
 } = wp.i18n;
 /**
@@ -261,7 +264,7 @@ const bepAddTypographySettings = createHigherOrderComponent(BlockEdit => {
       typoRendered: true
     }; // Add SelectControl to InspectorControls
 
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(BlockEdit, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, props, {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(BlockEdit, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, props, {
       attributes: updatedAttributes
     })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(InspectorControls, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(PanelBody, {
       title: __('Typography', 'block-editor-plus'),
@@ -295,34 +298,58 @@ const bepAddTypographySettings = createHigherOrderComponent(BlockEdit => {
 }, 'bepAddTypographySettings');
 addFilter('editor.BlockEdit', 'bep/typo-controls', bepAddTypographySettings);
 /**
- * Add style to block
+ * Add Typography styles to block
  */
 
-const bepAddTypoStyle = createHigherOrderComponent(BlockListBlock => {
+const bepAddTypoStyle = createHigherOrderComponent(BlockEdit => {
   return props => {
     const {
-      attributes
+      name,
+      attributes,
+      clientId
     } = props;
+    const uniqueId = `bep-${clientId.slice(0, 8)}`;
     const {
       deskFontSize,
       tabFontSize,
       mobFontSize
-    } = attributes; // return (
-    // 	<BlockListBlock {...props} className="bep-container">
-    // 		{`<style>
-    //         .bep-container {
-    //             font-size: ${deskFontSize}px;
-    //         }
-    //     </style>`}
-    // 	</BlockListBlock>
-    // );
+    } = attributes; // Modify the block's output here
 
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(BlockListBlock, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, props, {
-      className: "bep-container"
-    }));
+    const modifiedBlock = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("style", null, `
+						.${uniqueId} {
+							font-size: ${deskFontSize}px !important;
+						}
+						@media only screen and (max-width: 768px) {
+							.${uniqueId} {
+								font-size: ${tabFontSize}px !important;
+							}
+						}
+						@media only screen and (max-width: 480px) {
+							.${uniqueId} {
+								font-size: ${mobFontSize}px !important;
+							}
+						}
+					`), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(BlockEdit, props));
+    return modifiedBlock;
   };
 }, 'bepAddTypoStyle');
-addFilter('editor.BlockListBlock', 'bep/typo-style', bepAddTypoStyle);
+addFilter('editor.BlockEdit', 'bep/typo-style', bepAddTypoStyle);
+/**
+ * Add unique class to block
+ */
+
+const bepAddUniqueClass = createHigherOrderComponent(BlockListBlock => {
+  return props => {
+    const {
+      clientId
+    } = props;
+    const uniqueId = `bep-${clientId.slice(0, 8)}`;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)(BlockListBlock, (0,_babel_runtime_helpers_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, props, {
+      className: uniqueId
+    }));
+  };
+}, 'bepAddUniqueClass');
+addFilter('editor.BlockListBlock', 'bep/unqueId-class', bepAddUniqueClass, 9);
 
 /***/ }),
 

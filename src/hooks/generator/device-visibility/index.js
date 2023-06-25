@@ -84,4 +84,9 @@ const bepAddVisibilityClass = createHigherOrderComponent((BlockListBlock) => {
 	};
 }, 'bepAddVisibilityClass');
 
-addFilter('editor.BlockListBlock', 'bep/device-class', bepAddVisibilityClass);
+addFilter(
+	'editor.BlockListBlock',
+	'bep/device-class',
+	bepAddVisibilityClass,
+	20
+);

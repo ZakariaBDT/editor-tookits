@@ -2,6 +2,7 @@ const { createHigherOrderComponent } = wp.compose;
 const { addFilter } = wp.hooks;
 const { InspectorControls } = wp.blockEditor;
 const { PanelBody, RangeControl } = wp.components;
+const { Fragment } = wp.element;
 const { __ } = wp.i18n;
 
 /**
@@ -71,25 +72,57 @@ const bepAddTypographySettings = createHigherOrderComponent((BlockEdit) => {
 addFilter('editor.BlockEdit', 'bep/typo-controls', bepAddTypographySettings);
 
 /**
- * Add style to block
+ * Add Typography styles to block
  */
-const bepAddTypoStyle = createHigherOrderComponent((BlockListBlock) => {
+const bepAddTypoStyle = createHigherOrderComponent((BlockEdit) => {
 	return (props) => {
-		const { attributes } = props;
+		const { name, attributes, clientId } = props;
+
+		const uniqueId = `bep-${clientId.slice(0, 8)}`;
 
 		const { deskFontSize, tabFontSize, mobFontSize } = attributes;
 
-		// return (
-		// 	<BlockListBlock {...props} className="bep-container">
-		// 		{`<style>
-		//         .bep-container {
-		//             font-size: ${deskFontSize}px;
-		//         }
-		//     </style>`}
-		// 	</BlockListBlock>
-		// );
-		return <BlockListBlock {...props} className="bep-container" />;
+		// Modify the block's output here
+		const modifiedBlock = (
+			<Fragment>
+				<style>
+					{`
+						.${uniqueId} {
+							font-size: ${deskFontSize}px !important;
+						}
+						@media only screen and (max-width: 768px) {
+							.${uniqueId} {
+								font-size: ${tabFontSize}px !important;
+							}
+						}
+						@media only screen and (max-width: 480px) {
+							.${uniqueId} {
+								font-size: ${mobFontSize}px !important;
+							}
+						}
+					`}
+				</style>
+				<BlockEdit {...props} />
+			</Fragment>
+		);
+
+		return modifiedBlock;
 	};
 }, 'bepAddTypoStyle');
 
-addFilter('editor.BlockListBlock', 'bep/typo-style', bepAddTypoStyle);
+addFilter('editor.BlockEdit', 'bep/typo-style', bepAddTypoStyle);
+
+/**
+ * Add unique class to block
+ */
+const bepAddUniqueClass = createHigherOrderComponent((BlockListBlock) => {
+	return (props) => {
+		const { clientId } = props;
+
+		const uniqueId = `bep-${clientId.slice(0, 8)}`;
+
+		return <BlockListBlock {...props} className={uniqueId} />;
+	};
+}, 'bepAddUniqueClass');
+
+addFilter('editor.BlockListBlock', 'bep/unqueId-class', bepAddUniqueClass, 9);
